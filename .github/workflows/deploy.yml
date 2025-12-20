@@ -15,15 +15,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # (opzionale) test
       - name: Run tests
         run: |
           echo "No tests yet"
-          # npm test / go test / pytest ecc.
 
-      # (opzionale) SonarCloud
       - name: SonarCloud Scan
-        if: ${{ secrets.SONAR_TOKEN != '' }}
+        continue-on-error: true
         uses: SonarSource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -38,7 +35,7 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.157.90.236.220 }}
+          host: ${{ secrets.SERVER_IP }}
           username: deploy
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
