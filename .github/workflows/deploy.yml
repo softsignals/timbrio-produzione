@@ -32,13 +32,37 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
+      - name: Check SSH secrets
+        run: |
+          echo "🔍 Checking secrets..."
+          if [ -z "${{ secrets.SERVER_IP }}" ]; then
+            echo "❌ SERVER_IP is EMPTY"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SERVER_SSH_KEY }}" ]; then
+            echo "❌ SERVER_SSH_KEY is EMPTY"
+            exit 1
+          fi
+          echo "✅ Secrets OK"
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_IP }}
           username: deploy
           key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          script_stop: true
           script: |
+            set -e
+            echo "🚀 Deploy started on $(hostname)"
+
             cd /var/www/company
+
+            echo "📦 Pulling containers"
             docker compose pull
+
+            echo "🔄 Restarting stack"
             docker compose up -d
+
+            echo "✅ Deploy completed"
