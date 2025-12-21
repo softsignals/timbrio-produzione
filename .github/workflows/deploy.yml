@@ -4,45 +4,26 @@ on:
   push:
     branches:
       - main
-  pull_request:
 
 jobs:
-  build:
-    name: Build & Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Run tests
-        run: |
-          echo "No tests yet"
-
-      - name: SonarCloud Scan
-        continue-on-error: true
-        uses: SonarSource/sonarcloud-github-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   deploy:
     name: Deploy to VPS
-    needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Check SSH secrets
         run: |
-          echo "🔍 Checking secrets..."
           if [ -z "${{ secrets.SERVER_IP }}" ]; then
             echo "❌ SERVER_IP is EMPTY"
             exit 1
           fi
+
           if [ -z "${{ secrets.SERVER_SSH_KEY }}" ]; then
             echo "❌ SERVER_SSH_KEY is EMPTY"
             exit 1
           fi
+
           echo "✅ Secrets OK"
 
       - name: Deploy via SSH
@@ -52,17 +33,8 @@ jobs:
           username: deploy
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
-          script_stop: true
           script: |
             set -e
-            echo "🚀 Deploy started on $(hostname)"
-
             cd /var/www/company
-
-            echo "📦 Pulling containers"
             docker compose pull
-
-            echo "🔄 Restarting stack"
             docker compose up -d
-
-            echo "✅ Deploy completed"
