@@ -2,7 +2,7 @@ name: CI/CD Produzione
 
 on:
   push:
-    [cite_start]branches: [main] # Rilasci frequenti su codice stabile [cite: 7, 51]
+    branches: [main] # Rilasci frequenti su codice stabile [cite: 7, 51]
 
 jobs:
   build-and-deploy:
@@ -22,7 +22,7 @@ jobs:
         uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          [cite_start]SONAR_HOST_URL: http://157.90.236.220:9000 # [cite: 123]
+          SONAR_HOST_URL: http://157.90.236.220:9000 # [cite: 123]
 
       - name: Build Docker Image
         run: |
