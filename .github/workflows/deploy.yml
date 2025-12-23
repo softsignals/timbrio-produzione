@@ -6,22 +6,28 @@ on:
       - main
 
 jobs:
-  quality-and-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
-      # 1. Analisi statica con SonarQube
+      - name: Install Dependencies & Test
+        run: |
+          npm install
+          npm test # Fondamentale: Scrittura test e mock [cite: 74, 101, 295]
+
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
-        # Se fallisce, il merge viene bloccato [cite: 127]
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          [cite_start]SONAR_HOST_URL: 157.90.236.220 # O l'IP del tuo server se self-hosted [cite: 123]
 
-      # 2. Build immagine Docker
-      - name: Build Docker Image
-        run: docker build -t mia-app:${{ github.sha }} .
+      - name: Build and Push Docker
+        run: |
+          docker build -t timbrio-app:${{ github.sha }} .
+          # Qui andrebbe il push verso un registro (Docker Hub o GitHub Packages) [cite: 158, 256]
 
-      # 3. Deploy su Kubernetes (K3s) sul tuo server
-      - name: Deploy to VPS
+      - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1
         with:
           host: 157.90.236.220
@@ -29,5 +35,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/company
-            # Comando per aggiornare l'immagine su K3s
-            kubectl set image deployment/mia-app-deploy mia-app=mia-app:${{ github.sha }}
+            # Comando per aggiornare il container su Kubernetes [cite: 159, 262]
+            kubectl set image deployment/timbrio-app timbrio=timbrio-app:${{ github.sha }}
