@@ -1,0 +1,80 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "nome": "Mario",
+      "cognome": "Rossi",
+      "email": "mario.rossi@timbrio.com",
+      "password": "password123",
+      "ruolo": "dipendente",
+      "reparto": "Produzione",
+      "badge": "BAD001",
+      "orarioTurno": {
+        "entrata": "08:00",
+        "uscita": "17:00",
+        "pausaPranzo": "01:00"
+      }
+    },
+    {
+      "id": "2",
+      "nome": "Laura",
+      "cognome": "Bianchi",
+      "email": "laura.bianchi@timbrio.com",
+      "password": "password123",
+      "ruolo": "manager",
+      "reparto": "Amministrazione",
+      "badge": "BAD002",
+      "orarioTurno": {
+        "entrata": "09:00",
+        "uscita": "18:00",
+        "pausaPranzo": "01:00"
+      }
+    },
+    {
+      "id": "3",
+      "nome": "Giuseppe",
+      "cognome": "Verdi",
+      "email": "giuseppe.verdi@timbrio.com",
+      "password": "password123",
+      "ruolo": "dipendente",
+      "reparto": "Produzione",
+      "badge": "BAD003",
+      "orarioTurno": {
+        "entrata": "07:00",
+        "uscita": "15:00",
+        "pausaPranzo": "00:30"
+      }
+    },
+    {
+      "id": "4",
+      "nome": "Anna",
+      "cognome": "Neri",
+      "email": "anna.neri@timbrio.com",
+      "password": "admin123",
+      "ruolo": "admin",
+      "reparto": "IT",
+      "badge": "BAD004",
+      "orarioTurno": {
+        "entrata": "09:00",
+        "uscita": "18:00",
+        "pausaPranzo": "01:00"
+      }
+    },
+    {
+      "id": "5",
+      "nome": "Marco",
+      "cognome": "Timbratore",
+      "email": "timbratore@timbrio.com",
+      "password": "reception123",
+      "ruolo": "receptionist",
+      "reparto": "Reception",
+      "badge": "BAD005",
+      "orarioTurno": {
+        "entrata": "08:00",
+        "uscita": "17:00",
+        "pausaPranzo": "01:00"
+      }
+    }
+  ]
+}
+

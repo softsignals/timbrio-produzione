@@ -1,0 +1,30 @@
+module.exports = {
+  expo: {
+    name: 'timbrio',
+    slug: 'timbrio',
+    version: '1.0.0',
+    orientation: 'portrait',
+    icon: './assets/icon.png',
+    userInterfaceStyle: 'light',
+    splash: {
+      image: './assets/splash-icon.png',
+      resizeMode: 'contain',
+      backgroundColor: '#ffffff',
+    },
+    ios: {
+      supportsTablet: true,
+    },
+    android: {
+      adaptiveIcon: {
+        foregroundImage: './assets/adaptive-icon.png',
+        backgroundColor: '#ffffff',
+      },
+      edgeToEdgeEnabled: true,
+      package: 'com.gervongolarium.timbrio',
+    },
+    web: {
+      favicon: './assets/favicon.png',
+    },
+  },
+};
+
