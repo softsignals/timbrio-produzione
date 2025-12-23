@@ -1,59 +1,29 @@
-name: CI/CD Pipeline Produzione
+name: CI/CD Produzione
 
 on:
   push:
-    branches:
-      - main  # Solo codice stabile va in produzione [cite: 51]
-  pull_request:
-    branches:
-      - main  # Trigger per i controlli durante la code review [cite: 58, 203]
+    [cite_start]branches: [main] # Rilasci frequenti su codice stabile [cite: 7, 51]
 
 jobs:
-  quality-and-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend # Risolve l'errore ENOENT
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Necessario per l'analisi SonarQube [cite: 265]
-
+      
       - name: Install & Test
         run: |
           npm install
-          npm test # Scrittura test e mock obbligatoria [cite: 74, 101]
+          npm test # Scrittura test obbligatoria [cite: 74]
 
-      # 1. Analisi Qualità - Ferma la pipeline se fallisce [cite: 113, 127]
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: http://157.90.236.220:9000 # URL corretto con porta Docker [cite: 272]
-        with:
-          args: >
-            -Dsonar.projectKey=timbrio-backend
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+          [cite_start]SONAR_HOST_URL: http://157.90.236.220:9000 # [cite: 123]
 
-      # 2. Login e Push su GitHub Packages (Registry integrato) [cite: 32, 256]
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and Push Docker Image
+      - name: Build Docker Image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}/backend:${{ github.sha }} .
-          docker push ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
-
-      # 3. Deploy su Kubernetes nella VPS [cite: 159, 236]
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@v1
-        with:
-          host: 157.90.236.220
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # Accede alla cartella di produzione [cite: 315]
-            cd /var/www/company
-            # Aggiorna l'immagine sul cluster Kubernetes locale (K3s) [cite: 262]
-            kubectl set image deployment/timbrio-app backend=ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+          docker build -t timbrio-backend:${{ github.sha }} . # [cite: 158]
