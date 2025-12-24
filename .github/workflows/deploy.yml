@@ -60,16 +60,15 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Esegue il login al registry anche sulla VPS
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            
-            # Scarica e aggiorna il container
-            docker pull ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+            docker pull ghcr.io/${{ github.repository }}/backend:latest
             docker stop timbrio-backend || true
             docker rm timbrio-backend || true
-            
             docker run -d \
               --name timbrio-backend \
-              --restart unless-stopped \
               -p 3000:3000 \
-              ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+              -e PORT=3000 \
+              -e NODE_ENV=production \
+              -e SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
+              -e SUPABASE_SERVICE_KEY="${{ secrets.SUPABASE_SERVICE_KEY }}" \
+              --restart unless-stopped \
+              ghcr.io/${{ github.repository }}/backend:latest
