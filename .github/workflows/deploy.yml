@@ -3,6 +3,10 @@ name: CI/CD Produzione
 on:
   push:
     branches: [main]
+    
+permissions:
+  contents: read
+  packages: write  # Permette alla pipeline di creare/aggiornare l'immagine Docker
 
 jobs:
   build-and-deploy:
